@@ -8,7 +8,7 @@ public class MemberList {
 
     /* Format shall be Hospital Name:IP Address: Port */
     public MemberList() {
-        this.memberlist = new LinkedList<>();
+        this.memberlist = new LinkedList<String>();
     }
 
     public void addLastMember(String newmember) {

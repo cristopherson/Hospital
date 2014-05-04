@@ -66,20 +66,19 @@ class Connection extends Thread {
             String sCurrentLine;
             String file = "AccessList.txt";
             FileReader fr = new FileReader(file);
-            try (BufferedReader textReader = new BufferedReader(fr)) {
-                int i = 0;
-                while ((sCurrentLine = textReader.readLine()) != null) {
-                    array = sCurrentLine.split(",");
-                    if (array.length == 3) {
-                        if ((name.equals(array[0])) && (pass.equals(array[1]))) {
-                            System.out.println("Access granted");
-                            ans = array[2];
-                            break;
+            BufferedReader textReader = new BufferedReader(fr);
+            int i = 0;
+            while ((sCurrentLine = textReader.readLine()) != null) {
+                array = sCurrentLine.split(",");
+                if (array.length == 3) {
+                    if ((name.equals(array[0])) && (pass.equals(array[1]))) {
+                        System.out.println("Access granted");
+                        ans = array[2];
+                        break;
 
-                        }
                     }
-                    i++;
                 }
+                i++;
             }
             out.flush();
             out.writeUTF(ans);

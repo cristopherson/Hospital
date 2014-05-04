@@ -32,6 +32,7 @@ public class Middleware {
     private final int queryTiemout = 3000; // miliseconds
     private final ThreadTcpListener tcpThread;
     private final ThreadMulticastListener multicastThread;
+    private String logBuffer = "";
 
     public enum StateMachineStage {
 
@@ -43,7 +44,7 @@ public class Middleware {
         memberList = new MemberList();
         node = new ComNode();
         inf = new Info();
-        owner = false;        
+        owner = false;
         this.id = id;
         this.address = address;
         this.port = port;
@@ -132,7 +133,7 @@ public class Middleware {
             switch (inner_stage) {
                 case TX_LOGIN:
                     System.out.println(id + ">> Login");
-				// At this point a message has to be sent as a login "request"
+                    // At this point a message has to be sent as a login "request"
                     // Call here message Tx with name:ip address: port
                     String message = yoloPack.createPackTx(
                             MemberList.createMemberListItem(id, address, port),
@@ -146,7 +147,7 @@ public class Middleware {
                     rx_table = tcpThread.isRxTable();
                     if (true == rx_table) {
                         System.out.println(id + ">> Rx table");
-					// Store message string or send it as parameter to function
+                        // Store message string or send it as parameter to function
                         // below
                         // Create Table setFlatMemberList(String flatmemberlist);
                         // Nothing else to do we are now part of the netguork
@@ -164,7 +165,7 @@ public class Middleware {
                 case RX_TABLE_TIMEOUT:
                     currentTime = System.currentTimeMillis();
                     if (timeoutInitialCondition) {
-					// This way the first substraction for timestamp wont be
+                        // This way the first substraction for timestamp wont be
                         // currentTime - 0,
                         // which would happen to be very large
                         timeoutInitialCondition = false;
@@ -187,7 +188,7 @@ public class Middleware {
                 case TX_INQUIRE:
                     System.out.println(id + ">> Tx inquire");
 
-				// At this point a message has to be sent as a arbitrate
+                    // At this point a message has to be sent as a arbitrate
                     // "request"
                     // Call here message Tx
                     String txSender = MemberList.createMemberListItem(id, address,
@@ -213,7 +214,7 @@ public class Middleware {
                 case RX_INQUIRE_TIMEOUT:
                     currentTime = System.currentTimeMillis();
                     if (timeoutInitialCondition) {
-					// This way the first substraction for timestamp wont be
+                        // This way the first substraction for timestamp wont be
                         // currentTime - 0,
                         // which would happen to be very large
                         timeoutInitialCondition = false;
@@ -300,7 +301,7 @@ public class Middleware {
         String senderAddress = yoloPack.getSender().split(";")[1];
         String senderPort = yoloPack.getSender().split(";")[2];
 
-        if (!txReceiver.split(";")[0].equals(id)) {            
+        if (!txReceiver.split(";")[0].equals(id)) {
             String txAnswer = "";
             boolean replyQuery = true;
 
@@ -363,7 +364,7 @@ public class Middleware {
         String txSender = MemberList.createMemberListItem(id, address, port);
         double replyInitialTime = System.currentTimeMillis();
         double replyCurrentTime;
-        
+
         int timeout = 0;
 
         YoloPack yoloPack = new YoloPack();
@@ -390,7 +391,23 @@ public class Middleware {
 
         while (iterator.hasNext()) {
             String data = iterator.next();
+            logBuffer += data + "\n";
             System.out.println(data);
         }
+    }
+
+    /**
+     * @return the logBuffer
+     */
+    public String getLogBuffer() {
+        return logBuffer;
+    }
+    
+    public void clearLogBuffer(){
+        logBuffer = "";
+    }
+    
+    public void setInfoFile(String filePath) {
+        inf.setFilePath(filePath);
     }
 }
