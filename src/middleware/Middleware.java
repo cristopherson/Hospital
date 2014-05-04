@@ -17,6 +17,7 @@ public class Middleware {
     private String id;
     private String address;
     private String port;
+    private final Info inf;
 
     private long currentTime;
     private long currentTimeZ1;
@@ -41,7 +42,8 @@ public class Middleware {
     public Middleware(String id, String address, String port) {
         memberList = new MemberList();
         node = new ComNode();
-        owner = false;
+        inf = new Info();
+        owner = false;        
         this.id = id;
         this.address = address;
         this.port = port;
@@ -298,8 +300,7 @@ public class Middleware {
         String senderAddress = yoloPack.getSender().split(";")[1];
         String senderPort = yoloPack.getSender().split(";")[2];
 
-        if (!txReceiver.split(";")[0].equals(id)) {
-            Info inf = new Info();
+        if (!txReceiver.split(";")[0].equals(id)) {            
             String txAnswer = "";
             boolean replyQuery = true;
 
