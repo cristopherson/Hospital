@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class client121 {
-	public Boolean Send(String message, String hostname, int serverPort) 
+public class Client121 {
+	public Boolean send(String message, String hostname, int serverPort) 
 	{
 		// arguments supply message and hostname of destination
-		Socket s = null;
+		Socket socket = null;
 		Boolean ans = false;
 		try
 		{
 			
-			s = new Socket(hostname, serverPort);
+			socket = new Socket(hostname, serverPort);
 			//DataInputStream in = new DataInputStream( s.getInputStream());
-			DataOutputStream out = new DataOutputStream( s.getOutputStream());
+			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
 			out.writeUTF(message);
 			ans = true;
 		}
@@ -31,16 +31,15 @@ public class client121 {
 		}
 		catch (IOException e)
 		{
-			//System.out.println("IO:"+e.getMessage());
-			ans = false;
+		ans = false;
 		}
 		finally 
 		{
-			if(s!=null) 
+			if(socket!=null) 
 			{
 				try 
 				{
-					s.close();
+					socket.close();
 					System.out.println("closed");
 				}
 				catch (IOException e)

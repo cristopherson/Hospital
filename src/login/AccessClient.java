@@ -9,18 +9,18 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class AccessClient {
-	public String RequestAccess(String Name, String Password, String hostname, int serverPort) 
+	public String requestAccess(String name, String password, String hostname, int serverPort) 
 	{
 		// arguments supply message and hostname of destination
-		Socket s = null;
+		Socket socket = null;
 		String ans = "";
 		try
 		{
 			
-			s = new Socket(hostname, serverPort);
-			BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-			DataOutputStream out = new DataOutputStream( s.getOutputStream());
-			out.writeUTF(Name+","+Password);
+			socket = new Socket(hostname, serverPort);
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			DataOutputStream out = new DataOutputStream( socket.getOutputStream());
+			out.writeUTF(name+","+password);
 			if ((ans = in.readLine()) == null) 
 			{
 				ans ="ERROR";
@@ -42,11 +42,11 @@ public class AccessClient {
 		}
 		finally 
 		{
-			if(s!=null) 
+			if(socket!=null) 
 			{
 				try 
 				{
-					s.close();				
+					socket.close();				
 				}
 				catch (IOException e)
 				{

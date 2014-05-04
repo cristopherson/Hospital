@@ -11,77 +11,77 @@ public class MemberList {
 		this.memberlist = new LinkedList<String>();
 	}
 
-	public void AddLastMember(String newmember) {
+	public void addLastMember(String newmember) {
 		this.memberlist.addLast(newmember);
 	}
 
-	public void RemoveFirstMember() {
+	public void removeFirstMember() {
 		this.memberlist.removeFirst();
 	}
 
-	public String GetFirstMember() {
+	public String getFirstMember() {
 		return (this.memberlist.getFirst());
 	}
 
-	public String GetLastMember() {
+	public String getLastMember() {
 		return (this.memberlist.getLast());
 	}
 
-	public int GetAmountMembers() {
+	public int getAmountMembers() {
 		return (this.memberlist.size());
 	}
 
-	public String GetIndexedMember(int index) {
+	public String getIndexedMember(int index) {
 		return (this.memberlist.get(index));
 	}
 
-	public String GetHospitalName() {
-		String[] elements = GetLastMember().split(";");
+	public String getHospitalName() {
+		String[] elements = getLastMember().split(";");
 		return (elements[0]);
 	}
 
-	public String GetIpAddress() {
-		String[] elements = GetLastMember().split(";");
+	public String getIpAddress() {
+		String[] elements = getLastMember().split(";");
 		return (elements[1]);
 	}
 
-	public String GetPort() {
-		String[] elements = GetLastMember().split(";");
+	public String getPort() {
+		String[] elements = getLastMember().split(";");
 		return (elements[2]);
 	}
 
-	public String GetFlatMemberList() {
+	public String getFlatMemberList() {
 		String flattening = "";
-		int amount = GetAmountMembers();
+		int amount = getAmountMembers();
 		int i;
 
 		if (amount > 0) {
-			flattening = GetIndexedMember(0);
+			flattening = getIndexedMember(0);
 		}
 
 		for (i = 1; i < amount; i++) {
-			flattening = flattening + "_#_" + GetIndexedMember(i);
+			flattening = flattening + "_#_" + getIndexedMember(i);
 		}
 
 		return (flattening);
 	}
 
-	public void SetFlatMemberList(String flatmemberlist) {
+	public void setFlatMemberList(String flatmemberlist) {
 		String[] members = flatmemberlist.split("_#_");
 		int length = members.length;
 		int i;
 
 		for (i = 0; i < length; i++) {
-			AddLastMember(members[i]);
+			addLastMember(members[i]);
 		}
 	}
 
-	public String InquireNewOwner() {
-		if(GetAmountMembers() <= 0)
+	public String inquireNewOwner() {
+		if(getAmountMembers() <= 0)
 			return "";
 		
-		RemoveFirstMember();
-		return (GetFirstMember());
+		removeFirstMember();
+		return (getFirstMember());
 	}
 
 	public static String createMemberListItem(String id, String hostName,

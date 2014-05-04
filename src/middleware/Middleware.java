@@ -6,8 +6,7 @@ import java.util.LinkedList;
 import psudoapp.Info;
 
 import yolopacking.YoloPack;
-import com121.client121;
-import com121.server121;
+import com121.Client121;
 
 public class Middleware {
 	private MemberList memberList;
@@ -68,7 +67,7 @@ public class Middleware {
 	public boolean arbitrate() {
 		YoloPack yoloPack = new YoloPack();
 
-		String newOwner = memberList.InquireNewOwner();
+		String newOwner = memberList.inquireNewOwner();
 
 		if (newOwner.equals("")) {
 			return false;
@@ -87,14 +86,14 @@ public class Middleware {
 		}
 
 		owner = true;
-		client121 tcpNode = new client121();
-		String receiverHospitalName = memberList.GetHospitalName();
-		String receiverIpAddress = memberList.GetIpAddress();
-		String receiverPort = memberList.GetPort();
+		Client121 tcpNode = new Client121();
+		String receiverHospitalName = memberList.getHospitalName();
+		String receiverIpAddress = memberList.getIpAddress();
+		String receiverPort = memberList.getPort();
 		String txReceiver = MemberList.createMemberListItem(
 				receiverHospitalName, receiverIpAddress, receiverPort);
 
-		String flatTable = memberList.GetFlatMemberList();
+		String flatTable = memberList.getFlatMemberList();
 		message = yoloPack.createPackTx(txSender, txReceiver,
 				QueryType.SET_TABLE, flatTable, "none");
 		boolean tcpMessageSuccess = false;
@@ -103,7 +102,7 @@ public class Middleware {
 
 		System.out.println("Sending message " + message);
 		do {
-			tcpMessageSuccess = tcpNode.Send(message, receiverIpAddress,
+			tcpMessageSuccess = tcpNode.send(message, receiverIpAddress,
 					Integer.parseInt(receiverPort));
 		} while (retries < MAX_RETRIES && !tcpMessageSuccess);
 
@@ -153,13 +152,13 @@ public class Middleware {
 					System.out.println(id + ">> Rx table");
 					// Store message string or send it as parameter to function
 					// below
-					// Create Table SetFlatMemberList(String flatmemberlist);
+					// Create Table setFlatMemberList(String flatmemberlist);
 					// Nothing else to do we are now part of the netguork
 					String data = tcpThread.getData();
 
 					yoloPack.parsePackRx(data);
 					System.out.println(id + ">> table " + yoloPack.getData());
-					memberList.SetFlatMemberList(yoloPack.getData());
+					memberList.setFlatMemberList(yoloPack.getData());
 
 					inner_stage = StateMachineStage.FINISH;
 				} else {
@@ -205,12 +204,12 @@ public class Middleware {
 				break;
 
 			case RX_INQUIRE:
-				rx_inquire = multicastThread.isRx_inquire();
+				rx_inquire = multicastThread.isRxInquire();
 				if (true == rx_inquire) {
 					// Nothing else to do we are now synched
 					System.out.println(id + ">> Rx inquire");
 					inner_stage = StateMachineStage.RX_TABLE;
-					multicastThread.setRx_inquire(false);
+					multicastThread.setRxInquire(false);
 				} else {
 					inner_stage = StateMachineStage.RX_INQUIRE_TIMEOUT;
 				}
@@ -242,7 +241,7 @@ public class Middleware {
 				System.out.println(id + ">> I am owner");
 				// Add yourself to the memberlist table since you are a loner
 				owner = true;
-				memberList.AddLastMember(MemberList.createMemberListItem(id,
+				memberList.addLastMember(MemberList.createMemberListItem(id,
 						address, port));
 				inner_stage = StateMachineStage.FINISH;
 				break;
@@ -265,9 +264,9 @@ public class Middleware {
 		String ans = "";
 		String[] array;
 
-		memberList.AddLastMember(newMember);
+		memberList.addLastMember(newMember);
 		if (owner) {
-			ans = memberList.GetFlatMemberList();
+			ans = memberList.getFlatMemberList();
 		}
 
 		return ans;
@@ -275,21 +274,21 @@ public class Middleware {
 
 	public void txMemberList() {
 		// TODO Auto-generated method stub
-		if (multicastThread.isLogin_requested()) {
+		if (multicastThread.isLoginRequested()) {
 			processLogin(multicastThread.getData());
-			multicastThread.setLogin_requested(false);
+			multicastThread.setLoginRequested(false);
 		}
-		if (multicastThread.isUpdate_table()) {
+		if (multicastThread.isUpdateTable()) {
 			YoloPack yoloPack = new YoloPack();
 			yoloPack.parsePackRx(multicastThread.getData());
 			System.out.println("Sender = " + yoloPack.getSender());
 			if (!yoloPack.getSender().split(";")[0].equals(id))
 				arbitrate();
-			multicastThread.setUpdate_table(false);
+			multicastThread.setUpdateTable(false);
 		}
-		if (multicastThread.isQuery_requested()) {
+		if (multicastThread.isQueryRequested()) {
 			processQuery();
-			multicastThread.setQuery_requested(false);
+			multicastThread.setQueryRequested(false);
 		}
 	}
 
@@ -297,7 +296,7 @@ public class Middleware {
 		YoloPack yoloPack = new YoloPack();
 		String data = multicastThread.getData();
 		yoloPack.parsePackRx(data);
-		client121 client = new client121();
+		Client121 client = new Client121();
 		String txSender = MemberList.createMemberListItem(id, address, port);
 		String txReceiver = yoloPack.getSender();
 		String txData = yoloPack.getData();
@@ -328,7 +327,7 @@ public class Middleware {
 						QueryType.QUERY_ANSWER, txData, txAnswer);
 
 				System.out.println("Replying query " + message);
-				client.Send(message, senderAddress,
+				client.send(message, senderAddress,
 						Integer.parseInt(senderPort));
 			}
 		}
@@ -341,26 +340,26 @@ public class Middleware {
 		yoloPack.parsePackRx(data);
 
 		if (!yoloPack.getSender().split(";")[0].equals(id)) {
-			memberList.AddLastMember(yoloPack.getSender());
+			memberList.addLastMember(yoloPack.getSender());
 
 			if (owner) {
 				yoloPack.Clear();
 
-				client121 client = new client121();
+				Client121 client = new Client121();
 				String txSender = MemberList.createMemberListItem(id, address,
 						port);
-				String txReceiver = memberList.GetLastMember();
-				String txData = memberList.GetFlatMemberList();
+				String txReceiver = memberList.getLastMember();
+				String txData = memberList.getFlatMemberList();
 
 				String message = yoloPack.createPackTx(txSender, txReceiver,
 						QueryType.SET_TABLE, txData, "none");
 
-				client.Send(message, memberList.GetIpAddress(),
-						Integer.parseInt(memberList.GetPort()));
+				client.send(message, memberList.getIpAddress(),
+						Integer.parseInt(memberList.getPort()));
 
 			}
 		}
-		multicastThread.setLogin_requested(false);
+		multicastThread.setLoginRequested(false);
 	}
 
 	public void query(String query) {

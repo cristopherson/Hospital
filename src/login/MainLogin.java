@@ -9,8 +9,8 @@ public class MainLogin {
 	public static void main(String[] args) 
 	{
 		Boolean run = true;
-		Thread t = new Thread(new LoginServer());
-		t.start();
+		Thread thread = new Thread(new LoginServer());
+		thread.start();
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -40,7 +40,7 @@ public class MainLogin {
 			}*/
 		}
 		
-		t.interrupt();
+		thread.interrupt();
 		System.exit(0);
 	}
 	

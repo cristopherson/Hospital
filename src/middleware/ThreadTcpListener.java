@@ -1,11 +1,11 @@
 package middleware;
 
-import com121.server121;
+import com121.Server121;
 
 import yolopacking.YoloPack;
 
 public class ThreadTcpListener implements Runnable {
-	private server121 server;
+	private Server121 server;
 	private final int TIMEOUT = 0;
 	private String data;
 	private YoloPack yoloPack;
@@ -16,7 +16,7 @@ public class ThreadTcpListener implements Runnable {
 
 	public ThreadTcpListener(String address, int port) {
 		yoloPack = new YoloPack();
-		this.server = new server121();
+		this.server = new Server121();
 		this.address = address;
 		this.port = port;
 	}

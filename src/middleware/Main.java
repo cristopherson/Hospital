@@ -55,7 +55,7 @@ public class Main extends JFrame{
 						.toString();
 			}
 			System.out.println("Hostname " + hostname);
-			port = RequestLogin.RequestAccess(id, pass, hostname, serverPort);
+			port = RequestLogin.requestAccess(id, pass, hostname, serverPort);
 			if (port.length() == 6) {
 				port = port.substring(port.length() - 4, port.length());
 			}

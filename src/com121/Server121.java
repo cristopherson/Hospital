@@ -3,19 +3,19 @@ package com121;
 import java.net.*;
 import java.io.*;
 
-public class server121 
+public class Server121 
 {
 	
 	ServerSocket listenSocket = null;
 	DataInputStream in;
 	DataOutputStream out;
 	
-	public String Receive(String Address,int serverPort, int timeout)
+	public String Receive(String address,int serverPort, int timeout)
 	{
 		Boolean stat = false;
 		String ans ="";
 		try {
-			listenSocket = new ServerSocket(serverPort,0,InetAddress.getByName(Address));
+			listenSocket = new ServerSocket(serverPort,0,InetAddress.getByName(address));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

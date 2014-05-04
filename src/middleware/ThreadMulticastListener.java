@@ -9,11 +9,11 @@ public class ThreadMulticastListener implements Runnable {
 	private final int TIMEOUT = 0;
 	private String data;
 	private YoloPack yoloPack;
-	private boolean rx_inquire;
-	private boolean login_requested;
-	private boolean update_table;
-	private boolean query_requested;
-	private boolean query_answer;
+	private boolean rxInquire;
+	private boolean loginRequested;
+	private boolean updateTable;
+	private boolean queryRequested;
+	private boolean queryAnswer;
 
 	public ThreadMulticastListener(ComNode node) {
 		this.node = node;
@@ -38,36 +38,36 @@ public class ThreadMulticastListener implements Runnable {
 			System.out.println("Query type = " + yoloPack.getQuery());
 			if (yoloPack.getQuery() == QueryType.LOGIN) {
 				System.out.println("Setting login process");
-				login_requested = true;
+				loginRequested = true;
 			} else if (yoloPack.getQuery() == QueryType.UPDATE_TABLE) {
 				System.out.println("Updating table");
-				setUpdate_table(true);
+				setUpdateTable(true);
 			} else if (yoloPack.getQuery() == QueryType.ARBITRATING) {
 				System.out.println("Starting arbitration process");
-				rx_inquire = true;
+				rxInquire = true;
 			} else if (yoloPack.getQuery() == QueryType.QUERY) {
 				System.out.println("Verifying query");
-				query_requested = true;
+				queryRequested = true;
 				
 			}
 		}
 
 	}
 
-	public boolean isRx_inquire() {
-		return rx_inquire;
+	public boolean isRxInquire() {
+		return rxInquire;
 	}
 
-	public void setRx_inquire(boolean rx_inquire) {
-		this.rx_inquire = rx_inquire;
+	public void setRxInquire(boolean rxInquire) {
+		this.rxInquire = rxInquire;
 	}
 
-	public boolean isLogin_requested() {
-		return login_requested;
+	public boolean isLoginRequested() {
+		return loginRequested;
 	}
 
-	public void setLogin_requested(boolean login_requested) {
-		this.login_requested = login_requested;
+	public void setLoginRequested(boolean loginRequested) {
+		this.loginRequested = loginRequested;
 	}
 
 	public String getData() {
@@ -78,27 +78,27 @@ public class ThreadMulticastListener implements Runnable {
 		this.data = data;
 	}
 
-	public boolean isUpdate_table() {
-		return update_table;
+	public boolean isUpdateTable() {
+		return updateTable;
 	}
 
-	public void setUpdate_table(boolean update_table) {
-		this.update_table = update_table;
+	public void setUpdateTable(boolean updateTable) {
+		this.updateTable = updateTable;
 	}
 
-	public boolean isQuery_answer() {
-		return query_answer;
+	public boolean isQueryAnswer() {
+		return queryAnswer;
 	}
 
-	public void setQuery_answer(boolean query_answer) {
-		this.query_answer = query_answer;
+	public void setQueryAnswer(boolean queryAnswer) {
+		this.queryAnswer = queryAnswer;
 	}
 
-	public boolean isQuery_requested() {
-		return query_requested;
+	public boolean isQueryRequested() {
+		return queryRequested;
 	}
 
-	public void setQuery_requested(boolean query_requested) {
-		this.query_requested = query_requested;
+	public void setQueryRequested(boolean queryRequested) {
+		this.queryRequested = queryRequested;
 	}
 }

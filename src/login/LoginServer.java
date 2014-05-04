@@ -10,17 +10,17 @@ implements Runnable
 	{
 		try
 		{
-			String Address = InetAddress.getLocalHost().getHostAddress().toString();
+			String address = InetAddress.getLocalHost().getHostAddress().toString();
 
 			int serverPort = 40000;
-			ServerSocket listenSocket = new ServerSocket(serverPort,0,InetAddress.getByName(Address));			
+			ServerSocket listenSocket = new ServerSocket(serverPort,0,InetAddress.getByName(address));			
 			
 			while(true) 
 			{
 				try
 				{
 					Socket clientSocket = listenSocket.accept();
-					Connection c = new Connection(clientSocket);
+					Connection connection = new Connection(clientSocket);
 					Thread.sleep(100);
 				}
 				catch (InterruptedException e) 
@@ -62,20 +62,20 @@ class Connection extends Thread
 			
 	public void run()
 	{
-		String Name = "";
-		String Pass = "";
-		String Ans = "";
+		String name = "";
+		String pass = "";
+		String ans = "";
 		try 
 		{
 			//Get user and password from client
 			String[] array = in.readUTF().split(",");
 			if (array.length ==2)
 			{
-				Name = array[0];
-				Pass = array[1];
+				name = array[0];
+				pass = array[1];
 			}
 			System.out.println("");
-			System.out.println("Access requested by:" + Name);
+			System.out.println("Access requested by:" + name);
 			
 			//Search for it
 			String sCurrentLine;
@@ -88,10 +88,10 @@ class Connection extends Thread
 				array = sCurrentLine.split(",");
 				if (array.length ==3)
 				{
-					if ((Name.equals(array[0])) && (Pass.equals(array[1])))
+					if ((name.equals(array[0])) && (pass.equals(array[1])))
 					{
 						System.out.println("Access granted");
-						Ans =array[2];
+						ans =array[2];
 						break;
 						
 					}
@@ -100,7 +100,7 @@ class Connection extends Thread
 			}
 			textReader.close();
 			out.flush();	
-			out.writeUTF(Ans);
+			out.writeUTF(ans);
 		} 
 		catch(EOFException e) 
 		{
