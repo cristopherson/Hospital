@@ -10,90 +10,89 @@ import javax.swing.JFrame;
 
 import login.AccessClient;
 
-public class Main extends JFrame{
-	
-	public Main() {
-	}
-	
-	public void createAndShowGUI(){
-		this.setTitle("Yolo Application");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.pack();
-		this.setVisible(true);		
-	}
+public class Main extends JFrame {
 
-	public static void main(String args[]) throws InterruptedException {
-	
+    public Main() {
+    }
+
+    public void createAndShowGUI() {
+        this.setTitle("Yolo Application");
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+        this.setVisible(true);
+    }
+
+    public static void main(String args[]) throws InterruptedException {
+
 //		final Main mainApplication = new Main();
 //		javax.swing.SwingUtilities.invokeLater(new Runnable(){
 //			public void run(){
 //				mainApplication.createAndShowGUI();
 //			}
 //		});
-		
-		if (args.length < 2) {
-			System.err.println("Usage: Main <Name> <Password>");
-			System.exit(-1);
-		}
+        if (args.length < 2) {
+            System.err.println("Usage: Main <Name> <Password>");
+            System.exit(-1);
+        }
 
-		String id = args[0];
-		String pass = args[1];
-		String port = "";
-		int serverPort = 40000;
+        String id = args[0];
+        String pass = args[1];
+        String port = "";
+        int serverPort = 40000;
 
-		AccessClient RequestLogin = new AccessClient();
-		String hostname = "";
-		try {
-			if (args.length > 2) {
-				hostname = args[2];
-                                String temp = InetAddress.getLocalHost().getHostAddress()
-						.toString();
-                                
-                                System.out.println( hostname + " = " + temp + "?" + (hostname.toString().equals(temp.toString())));
-			} else {
-				hostname = InetAddress.getLocalHost().getHostAddress()
-						.toString();
-			}
-			System.out.println("Hostname " + hostname);
-			port = RequestLogin.requestAccess(id, pass, hostname, serverPort);
-			if (port.length() == 6) {
-				port = port.substring(port.length() - 4, port.length());
-			}
-			// int newServerPort = Integer.parseInt(port);
+        AccessClient RequestLogin = new AccessClient();
+        String hostname = "";
+        try {
+            if (args.length > 2) {
+                hostname = args[2];
+                String temp = InetAddress.getLocalHost().getHostAddress()
+                        .toString();
 
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.exit(-1);
-		}
+                System.out.println(hostname + " = " + temp + "?" + (hostname.toString().equals(temp.toString())));
+            } else {
+                hostname = InetAddress.getLocalHost().getHostAddress()
+                        .toString();
+            }
+            System.out.println("Hostname " + hostname);
+            port = RequestLogin.requestAccess(id, pass, hostname, serverPort);
+            if (port.length() == 6) {
+                port = port.substring(port.length() - 4, port.length());
+            }
+            // int newServerPort = Integer.parseInt(port);
 
-		if (port.length() != 4) {
-			System.out.println("Login Fail..." + port);
-			System.exit(-1);
-		} else {
-			System.out.println("Current process " + id + ";" + hostname + ";"
-					+ port);
-		}
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.exit(-1);
+        }
 
-		Middleware middleware = new Middleware(id, hostname, port);
-		middleware.LoginArbitrationStateMachine();
+        if (port.length() != 4) {
+            System.out.println("Login Fail..." + port);
+            System.exit(-1);
+        } else {
+            System.out.println("Current process " + id + ";" + hostname + ";"
+                    + port);
+        }
 
-		Thread listenerThread = new Thread(new MiddlewareListenerThread(
-				middleware));
-		listenerThread.start();
+        Middleware middleware = new Middleware(id, hostname, port);
+        middleware.LoginArbitrationStateMachine();
 
-		System.out.println("Application is ready to send queries");
-		while (true) {
-			BufferedReader bufferRead = new BufferedReader(
-					new InputStreamReader(System.in));
-			try {
-				String query = bufferRead.readLine();
-				middleware.query(query);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+        Thread listenerThread = new Thread(new MiddlewareListenerThread(
+                middleware));
+        listenerThread.start();
 
-	}
+        System.out.println("Application is ready to send queries");
+        while (true) {
+            BufferedReader bufferRead = new BufferedReader(
+                    new InputStreamReader(System.in));
+            try {
+                String query = bufferRead.readLine();
+                middleware.query(query);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+    }
 }

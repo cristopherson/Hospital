@@ -5,63 +5,64 @@ import com121.Server121;
 import yolopacking.YoloPack;
 
 public class ThreadTcpListener implements Runnable {
-	private Server121 server;
-	private final int TIMEOUT = 0;
-	private String data;
-	private YoloPack yoloPack;
-	private String address;
-	private int port;
-	private boolean rx_table = false;
-	private boolean answer_query = false;
 
-	public ThreadTcpListener(String address, int port) {
-		yoloPack = new YoloPack();
-		this.server = new Server121();
-		this.address = address;
-		this.port = port;
-	}
+    private final Server121 server;
+    private final int TIMEOUT = 0;
+    private final YoloPack yoloPack;
+    private String data;
+    private final String address;
+    private final int port;
+    private boolean rxTable = false;
+    private boolean answerQuery = false;
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		while (true) {
-			setData(server.Receive(address, port, TIMEOUT));
-			yoloPack.parsePackRx(getData());
+    public ThreadTcpListener(String address, int port) {
+        yoloPack = new YoloPack();
+        this.server = new Server121();
+        this.address = address;
+        this.port = port;
+    }
 
-			System.out.println("Response = " + yoloPack.getQuery());
-			if (yoloPack.getQuery() == QueryType.SET_TABLE) {
-				rx_table = true;
-			}
-			if(yoloPack.getQuery() == QueryType.QUERY_ANSWER){
-				
-				setAnswer_query(true);
-			}
-		}
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        while (true) {
+            setData(server.Receive(address, port, TIMEOUT));
+            yoloPack.parsePackRx(getData());
 
-	}
+            System.out.println("Response = " + yoloPack.getQuery());
+            if (yoloPack.getQuery() == QueryType.SET_TABLE) {
+                rxTable = true;
+            }
+            if (yoloPack.getQuery() == QueryType.QUERY_ANSWER) {
 
-	boolean isRx_table() {
-		return rx_table;
-	}
+                setAnswerQuery(true);
+            }
+        }
 
-	public void setRx_table(boolean rx_table) {
-		this.rx_table = rx_table;
-	}
+    }
 
-	public String getData() {
-		return data;
-	}
+    boolean isRxTable() {
+        return rxTable;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public void setRxTable(boolean rxTable) {
+        this.rxTable = rxTable;
+    }
 
-	public boolean isAnswer_query() {
-		return answer_query;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void setAnswer_query(boolean answer_query) {
-		this.answer_query = answer_query;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public boolean isAnswerQuery() {
+        return answerQuery;
+    }
+
+    public void setAnswerQuery(boolean answerQuery) {
+        this.answerQuery = answerQuery;
+    }
 
 }

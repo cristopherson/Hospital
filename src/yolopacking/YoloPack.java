@@ -3,90 +3,91 @@ package yolopacking;
 import middleware.QueryType;
 
 public class YoloPack {
-	private String Protocol;
-	private String Sender;
-	private String Receiver;
-	private QueryType Query;
-	private String Data;
-	private String Answer;
 
-	public YoloPack() {
-		Protocol = "";
-		Sender = "";
-		Receiver = "";
-		Query = QueryType.NONE;
-		Data = "";
-	}
+    private String protocol;
+    private String sender;
+    private String receiver;
+    private QueryType ruery;
+    private String data;
+    private String answer;
 
-	public String createPackTx(String txSender, String txReceiver,
-			QueryType txQuery, String txData, String txAnswer) {
-		String txPackage;
-		/*
-		 * Frame YOLO Protocol: YOLO:<Sender>:<Receiver>:<Query>:<Data>:<Answer>
-		 */
-		txPackage = "YOLO:" + txSender + ":" + txReceiver + ":" + txQuery + ":"
-				+ txData + ":" + txAnswer;
-		return txPackage;
-	}
+    public YoloPack() {
+        protocol = "";
+        sender = "";
+        receiver = "";
+        ruery = QueryType.NONE;
+        data = "";
+    }
 
-	public void parsePackRx(String RxMessage) {
-		String splittedMessage[] = RxMessage.split(":");
+    public String createPackTx(String txSender, String txReceiver,
+            QueryType txQuery, String txData, String txAnswer) {
+        String txPackage;
+        /*
+         * Frame YOLO protocol: YOLO:<Sender>:<Receiver>:<Query>:<Data>:<Answer>
+         */
+        txPackage = "YOLO:" + txSender + ":" + txReceiver + ":" + txQuery + ":"
+                + txData + ":" + txAnswer;
+        return txPackage;
+    }
 
-		if (splittedMessage.length < 6) {
-			System.err.println("Invalid message: " + RxMessage);
-			return;
-		}
+    public void parsePackRx(String rxMessage) {
+        String splittedMessage[] = rxMessage.split(":");
 
-		Protocol = splittedMessage[0];
-		Sender = splittedMessage[1];
-		Receiver = splittedMessage[2];
-		Query = parseStringToQuery(splittedMessage[3]);
-		Data = splittedMessage[4];
-		Answer = splittedMessage[5];
+        if (splittedMessage.length < 6) {
+            System.err.println("Invalid message: " + rxMessage);
+            return;
+        }
 
-	}
+        protocol = splittedMessage[0];
+        sender = splittedMessage[1];
+        receiver = splittedMessage[2];
+        ruery = parseStringToQuery(splittedMessage[3]);
+        data = splittedMessage[4];
+        answer = splittedMessage[5];
 
-	public String getProtocol() {
-		return Protocol;
-	}
+    }
 
-	public String getSender() {
-		return Sender;
-	}
+    public String getProtocol() {
+        return protocol;
+    }
 
-	public String getReceiver() {
-		return Receiver;
-	}
+    public String getSender() {
+        return sender;
+    }
 
-	public QueryType getQuery() {
-		return Query;
-	}
+    public String getReceiver() {
+        return receiver;
+    }
 
-	public String getData() {
-		return Data;
-	}
+    public QueryType getQuery() {
+        return ruery;
+    }
 
-	public String getAnswer() {
-		return Answer;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void Clear() {
-		Protocol = "";
-		Sender = "";
-		Receiver = "";
-		Query = QueryType.NONE;
-		Data = "";
-		Answer = "";
-	}
+    public String getAnswer() {
+        return answer;
+    }
 
-	public QueryType parseStringToQuery(String query) {
-		for (QueryType type : QueryType.values()) {
-			if (query.equals(type.toString())) {
-				return type;
-			}
-		}
+    public void clear() {
+        protocol = "";
+        sender = "";
+        receiver = "";
+        ruery = QueryType.NONE;
+        data = "";
+        answer = "";
+    }
 
-		return QueryType.NONE;
-	}
+    public QueryType parseStringToQuery(String query) {
+        for (QueryType type : QueryType.values()) {
+            if (query.equals(type.toString())) {
+                return type;
+            }
+        }
+
+        return QueryType.NONE;
+    }
 
 }
