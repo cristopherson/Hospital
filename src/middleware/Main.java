@@ -1,4 +1,4 @@
-package edu.uag.sistemasdistribuidos;
+package middleware;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,6 +46,10 @@ public class Main extends JFrame{
 		try {
 			if (args.length > 2) {
 				hostname = args[2];
+                                String temp = InetAddress.getLocalHost().getHostAddress()
+						.toString();
+                                
+                                System.out.println( hostname + " = " + temp + "?" + (hostname.toString().equals(temp.toString())));
 			} else {
 				hostname = InetAddress.getLocalHost().getHostAddress()
 						.toString();

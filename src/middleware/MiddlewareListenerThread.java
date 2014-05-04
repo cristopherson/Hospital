@@ -1,4 +1,4 @@
-package edu.uag.sistemasdistribuidos;
+package middleware;
 
 public class MiddlewareListenerThread implements Runnable{
 	private Middleware middleware;

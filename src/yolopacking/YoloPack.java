@@ -1,6 +1,6 @@
 package yolopacking;
 
-import edu.uag.sistemasdistribuidos.QueryType;
+import middleware.QueryType;
 
 public class YoloPack {
 	private String Protocol;

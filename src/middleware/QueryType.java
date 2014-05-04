@@ -1,4 +1,4 @@
-package edu.uag.sistemasdistribuidos;
+package middleware;
 
 public enum QueryType {
 	NONE,

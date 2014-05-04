@@ -1,4 +1,4 @@
-package edu.uag.sistemasdistribuidos;
+package middleware;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -30,8 +30,8 @@ public class Middleware {
 	private boolean rx_inquire;
 	private boolean timeoutInitialCondition = true;
 	private boolean arbitrationActive;
-	private final int rxTableTimeout = 50;// miliseconds
-	private final int rxInquireTiemout = 100; // miliseconds
+	private final int rxTableTimeout = 500;// miliseconds
+	private final int rxInquireTiemout = 500; // miliseconds
 	private final int queryTiemout = 3000; // miliseconds
 	private ThreadTcpListener tcpThread;
 	private ThreadMulticastListener multicastThread;

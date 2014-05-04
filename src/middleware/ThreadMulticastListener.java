@@ -1,4 +1,4 @@
-package edu.uag.sistemasdistribuidos;
+package middleware;
 
 import java.io.UnsupportedEncodingException;
 
