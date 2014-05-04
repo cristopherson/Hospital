@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Info {
 
-    String filePath = "HospitalInfo.txt";
+    private String filePath = "HospitalInfo.txt";
 
     /**
      * Get all the info from a certain key as csv (,,,,)
@@ -24,7 +24,7 @@ public class Info {
         Boolean dataEndReached = false;
 
         try {
-            fr = new FileReader(filePath);
+            fr = new FileReader(getFilePath());
             BufferedReader textReader = new BufferedReader(fr);
             int i = 0;
 
@@ -78,7 +78,7 @@ public class Info {
         Boolean dataEndReached = false;
 
         try {
-            fr = new FileReader(filePath);
+            fr = new FileReader(getFilePath());
             BufferedReader textReader = new BufferedReader(fr);
             int i = 0;
 
@@ -118,5 +118,19 @@ public class Info {
         }
 
         return ans;
+    }
+
+    /**
+     * @return the filePath
+     */
+    public String getFilePath() {
+        return filePath;
+    }
+
+    /**
+     * @param filePath the filePath to set
+     */
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }
