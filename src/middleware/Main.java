@@ -24,16 +24,17 @@ public class Main extends javax.swing.JFrame {
 
     private Middleware middleware;
     private boolean loginSuccesful = false;
+    private boolean guiMode = false;
 
     /**
      * Creates new form MainGUI
      */
-    public Main() {
+    public Main(boolean mode) {
+        guiMode = mode;
         initComponents();
 
         try {
-            String address = InetAddress.getLocalHost().getHostAddress()
-                    .toString();
+            String address = InetAddress.getLocalHost().getHostAddress().toString();
             serverTextField.setText(address);
             informationFileTextField.setText("HospitalInfo.txt");
         } catch (UnknownHostException ex) {
@@ -41,7 +42,10 @@ public class Main extends javax.swing.JFrame {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        loginDialog.setVisible(true);
+        if (guiMode) {
+            loginDialog.pack();
+            loginDialog.setVisible(true);
+        }
     }
 
     /**
@@ -75,11 +79,6 @@ public class Main extends javax.swing.JFrame {
 
         loginDialog.setTitle("Login");
         loginDialog.setModal(true);
-        loginDialog.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosed(java.awt.event.WindowEvent evt) {
-                loginDialogWindowClosed(evt);
-            }
-        });
 
         informationFileLabel.setText("Information file");
 
@@ -234,6 +233,7 @@ public class Main extends javax.swing.JFrame {
     private void logoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
+        System.exit(0);
     }//GEN-LAST:event_logoutButtonActionPerformed
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
@@ -244,10 +244,12 @@ public class Main extends javax.swing.JFrame {
 
 
         loginSuccesful = startProcess(id, password, hostname, true);
+        System.out.println("Login status " + loginSuccesful);
         if (loginSuccesful) {
             this.setTitle("Hospital app user: " + id);
             middleware.setInfoFile(informationFileTextField.getText());
             loginDialog.dispose();
+            this.setVisible(true);
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 
@@ -263,28 +265,21 @@ public class Main extends javax.swing.JFrame {
     private void sendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendButtonActionPerformed
         // TODO add your handling code here:
         String query = fieldTextField.getText().trim();
-        String value = valueTextField.getText().trim();        
+        String value = valueTextField.getText().trim();
 
         if (query.isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Field can not be empty", "Invalid value", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         if (!value.isEmpty()) {
             query += "," + value;
         }
-        
+
         this.getMiddleware().query(query);
         logTextArea.setText(getMiddleware().getLogBuffer());
         getMiddleware().clearLogBuffer();
     }//GEN-LAST:event_sendButtonActionPerformed
-
-    private void loginDialogWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_loginDialogWindowClosed
-        // TODO add your handling code here:
-        
-        if(!loginSuccesful)
-            this.dispose();
-    }//GEN-LAST:event_loginDialogWindowClosed
 
     public boolean startProcess(String id, String pass, String hostname, boolean guiMode) {
         String port = "";
@@ -327,10 +322,15 @@ public class Main extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
+        /*
+         * Set the Nimbus look and feel
+         */
+        boolean guiMode = (args.length == 0);
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the
+         * default look and feel. For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -349,15 +349,17 @@ public class Main extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        final Main mainInstance = new Main();
-
-        boolean guiMode = (args.length == 0);
+        final Main mainInstance = new Main(guiMode);
+        
         String hostname = "";
         String id;
         String pass;
 
         if (guiMode) {
-            System.out.println("I am running on GUI mode");
+            if (!mainInstance.isLoginSuccessful()) {
+                System.out.println("Login was not executed, exiting");
+                System.exit(0);
+            }
         } else {
             if (args.length < 2) {
                 System.err.println("Usage: Main <Name> <Password> <Optional:serverAddress>");
@@ -370,8 +372,7 @@ public class Main extends javax.swing.JFrame {
                 hostname = args[2];
             } else {
                 try {
-                    hostname = InetAddress.getLocalHost().getHostAddress()
-                            .toString();
+                    hostname = InetAddress.getLocalHost().getHostAddress().toString();
                 } catch (UnknownHostException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -393,14 +394,16 @@ public class Main extends javax.swing.JFrame {
 
         }
 
-        /* Create and display the form */
+        /*
+         * Create and display the form
+         */
         java.awt.EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 mainInstance.setVisible(true);
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton browseButton;
     private javax.swing.JLabel fieldLabel;
@@ -435,5 +438,13 @@ public class Main extends javax.swing.JFrame {
      */
     public void setMiddleware(Middleware middleware) {
         this.middleware = middleware;
+    }
+
+    public boolean isLoginSuccessful() {
+        return loginSuccesful;
+    }
+
+    public boolean isGuiMode() {
+        return guiMode;
     }
 }
