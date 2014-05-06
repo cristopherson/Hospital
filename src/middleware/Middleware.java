@@ -7,6 +7,8 @@ import psudoapp.Info;
 
 import yolopacking.YoloPack;
 import com121.Client121;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Middleware {
 
@@ -324,9 +326,24 @@ public class Middleware {
                 String message = yoloPack.createPackTx(txSender, txReceiver,
                         QueryType.QUERY_ANSWER, txData, txAnswer);
 
+                int retries = 0;
                 System.out.println("Replying query " + message);
-                client.send(message, senderAddress,
-                        Integer.parseInt(senderPort));
+                while (retries++ < (memberList.getAmountMembers() + 3) && !tcpThread.isQueryAck()) {
+                    try {
+                        client.send(message, senderAddress,
+                                Integer.parseInt(senderPort));
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Middleware.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                
+                if(tcpThread.isQueryAck()) {
+                    tcpThread.setQueryAck(false);
+                } else {
+                    System.out.println("Message timed out probably it got lost");
+                }
+
             }
         }
 
@@ -375,38 +392,38 @@ public class Middleware {
         LinkedList<String> messageList = new LinkedList<String>();
 
         while (timeout <= queryTiemout) {
-            if (tcpThread.isAnswerQuery()) {
-                String data = tcpThread.getData();
-                yoloPack.parsePackRx(data);
+                if (tcpThread.isAnswerQuery()) {
+                    String data = tcpThread.getData();
+                    yoloPack.parsePackRx(data);
 
                 messageList.add(yoloPack.getAnswer());
                 tcpThread.setAnswerQuery(false);
-            }
-            replyCurrentTime = System.currentTimeMillis();
-            timeout = (int) (replyCurrentTime - replyInitialTime);
-        }
+                }
+        replyCurrentTime = System.currentTimeMillis();
+        timeout = (int) (replyCurrentTime - replyInitialTime);
+    }
 
-        System.out.println(id + ">> Following replies were received");
+    System.out.println(id + ">> Following replies were received");
         Iterator<String> iterator = messageList.iterator();
 
-        while (iterator.hasNext()) {
+    while (iterator.hasNext()) {
             String data = iterator.next();
-            logBuffer += data + "\n";
-            System.out.println(data);
-        }
+        logBuffer += data + "\n";
+        System.out.println(data);
     }
+}
 
-    /**
-     * @return the logBuffer
-     */
-    public String getLogBuffer() {
+/**
+ * @return the logBuffer
+ */
+public String getLogBuffer() {
         return logBuffer;
     }
-    
+
     public void clearLogBuffer(){
         logBuffer = "";
     }
-    
+
     public void setInfoFile(String filePath) {
         inf.setFilePath(filePath);
     }

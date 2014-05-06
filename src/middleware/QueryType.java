@@ -7,6 +7,7 @@ public enum QueryType {
     UPDATE_TABLE,
     QUERY,
     QUERY_ANSWER,
+    QUERY_ACK,
     ARBITRATING,
     SET_TABLE,
 }
